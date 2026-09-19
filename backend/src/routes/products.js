@@ -5,6 +5,10 @@ const asyncHandler = require("../lib/asyncHandler");
 
 const router = express.Router();
 
+function toArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
 router.get(
   "/",
   asyncHandler(async (req, res) => {
@@ -71,12 +75,12 @@ router.post(
         categoryId: categoryId ? Number(categoryId) : null,
         stock: stock ? Number(stock) : 50,
         isAddon: Boolean(isAddon),
-        quizPurpose: quizPurpose || null,
-        quizBudget: quizBudget || null,
-        quizPortable: quizPortable || null,
-        quizScreen: quizScreen || null,
-        quizBattery: quizBattery || null,
-        quizMultitask: quizMultitask || null,
+        quizPurpose: toArray(quizPurpose),
+        quizBudget: toArray(quizBudget),
+        quizPortable: toArray(quizPortable),
+        quizScreen: toArray(quizScreen),
+        quizBattery: toArray(quizBattery),
+        quizMultitask: toArray(quizMultitask),
       },
     });
 
@@ -118,12 +122,12 @@ router.put(
         categoryId: categoryId !== undefined ? (categoryId ? Number(categoryId) : null) : undefined,
         stock: stock !== undefined ? Number(stock) : undefined,
         isAddon: isAddon !== undefined ? Boolean(isAddon) : undefined,
-        quizPurpose: quizPurpose !== undefined ? quizPurpose || null : undefined,
-        quizBudget: quizBudget !== undefined ? quizBudget || null : undefined,
-        quizPortable: quizPortable !== undefined ? quizPortable || null : undefined,
-        quizScreen: quizScreen !== undefined ? quizScreen || null : undefined,
-        quizBattery: quizBattery !== undefined ? quizBattery || null : undefined,
-        quizMultitask: quizMultitask !== undefined ? quizMultitask || null : undefined,
+        quizPurpose: quizPurpose !== undefined ? toArray(quizPurpose) : undefined,
+        quizBudget: quizBudget !== undefined ? toArray(quizBudget) : undefined,
+        quizPortable: quizPortable !== undefined ? toArray(quizPortable) : undefined,
+        quizScreen: quizScreen !== undefined ? toArray(quizScreen) : undefined,
+        quizBattery: quizBattery !== undefined ? toArray(quizBattery) : undefined,
+        quizMultitask: quizMultitask !== undefined ? toArray(quizMultitask) : undefined,
       },
     });
 

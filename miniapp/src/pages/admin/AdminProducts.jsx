@@ -71,7 +71,7 @@ export default function AdminProducts() {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-800 truncate">{product.name}</p>
                 <p className="text-xs text-gray-400">
-                  {product.category ? `${product.category.emoji} ${product.category.name}` : "Kategoriyasiz"} · Ombor: {product.stock}
+                  {product.category ? product.category.name : "Kategoriyasiz"} · Ombor: {product.stock}
                 </p>
                 <p className="text-sm font-bold text-primary">{formatPrice(product.price)}</p>
               </div>

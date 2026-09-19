@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import ProductCard from "../components/ProductCard";
 import ProductSheet from "../components/ProductSheet";
+import { getCategoryIcon } from "../lib/categoryIcons";
 
 export default function Catalog() {
   const [categories, setCategories] = useState([]);
@@ -37,17 +38,21 @@ export default function Catalog() {
         >
           Barchasi
         </button>
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium ${
-              activeCategory === cat.id ? "bg-primary text-white" : "bg-white text-gray-600"
-            }`}
-          >
-            {cat.emoji} {cat.name}
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const Icon = getCategoryIcon(cat.name);
+          return (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium ${
+                activeCategory === cat.id ? "bg-primary text-white" : "bg-white text-gray-600"
+              }`}
+            >
+              <Icon size={15} strokeWidth={2} />
+              {cat.name}
+            </button>
+          );
+        })}
       </div>
 
       {loading ? (

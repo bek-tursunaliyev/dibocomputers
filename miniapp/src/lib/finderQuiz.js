@@ -13,10 +13,10 @@ export const QUESTIONS = [
     key: "budget",
     question: "Byudjetingiz qancha?",
     options: [
-      { value: "low", label: "$400 - $700", range: [0, 700] },
-      { value: "mid", label: "$700 - $1,000", range: [700, 1000] },
-      { value: "high", label: "$1,000 - $1,500", range: [1000, 1500] },
-      { value: "premium", label: "$1,500 dan yuqori", range: [1500, 999000] },
+      { value: "low", label: "$200 - $500", range: [200, 500] },
+      { value: "mid", label: "$500 - $800", range: [500, 800] },
+      { value: "high", label: "$800 - $1,200", range: [800, 1200] },
+      { value: "premium", label: "$1,200 dan yuqori", range: [1200, 999000] },
     ],
   },
   {
@@ -60,18 +60,17 @@ function getBudgetRange(value) {
   return QUESTIONS.find((q) => q.key === "budget").options.find((o) => o.value === value)?.range;
 }
 
-// Admin har bir mahsulotga mos javoblarni (quizPurpose, quizBudget, ...) belgilagan bo'lsa,
-// aynan shu 6 ta savol bo'yicha to'g'ridan-to'g'ri solishtiramiz — bu taxminiy matn qidirishdan
-// ancha aniqroq ishlaydi.
+// Admin har bir mahsulotga bir nechta javob (checkbox) belgilashi mumkin —
+// mos kelgan har bir savol uchun ball qo'shiladi.
 export function scoreProduct(product, answers) {
   let score = 0;
 
-  if (product.quizPurpose && product.quizPurpose === answers.purpose) score += 4;
-  if (product.quizBudget && product.quizBudget === answers.budget) score += 4;
-  if (product.quizPortable && product.quizPortable === answers.portable) score += 2;
-  if (product.quizScreen && product.quizScreen === answers.screen) score += 2;
-  if (product.quizBattery && product.quizBattery === answers.battery) score += 2;
-  if (product.quizMultitask && product.quizMultitask === answers.multitask) score += 2;
+  if (product.quizPurpose?.includes(answers.purpose)) score += 4;
+  if (product.quizBudget?.includes(answers.budget)) score += 4;
+  if (product.quizPortable?.includes(answers.portable)) score += 2;
+  if (product.quizScreen?.includes(answers.screen)) score += 2;
+  if (product.quizBattery?.includes(answers.battery)) score += 2;
+  if (product.quizMultitask?.includes(answers.multitask)) score += 2;
 
   // Mahsulot hali tag'lanmagan bo'lsa ham, haqiqiy narxi byudjetga mos kelsa
   // baribir arzimagan darajada tavsiyaga tushishi uchun kichik bonus beriladi.
