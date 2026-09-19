@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Plus, Pencil, Trash2, Search, X } from "lucide-react";
 import { api, imageUrl } from "../../lib/api";
 import { formatPrice } from "../../lib/format";
 import { useAdmin } from "../../context/AdminContext";
@@ -13,6 +13,7 @@ export default function AdminProducts() {
   const [loading, setLoading] = useState(true);
   const [formProduct, setFormProduct] = useState(undefined);
   const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
 
   const loadData = useCallback(() => {
     Promise.all([api.getProducts(), api.getCategories()])
@@ -26,6 +27,12 @@ export default function AdminProducts() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  const visibleProducts = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return products;
+    return products.filter((p) => p.name.toLowerCase().includes(q));
+  }, [products, query]);
 
   async function handleDelete(id) {
     if (!confirm("Rostdan ham ushbu mahsulotni o'chirmoqchimisiz?")) return;
@@ -51,17 +58,37 @@ export default function AdminProducts() {
 
       <button
         onClick={() => setFormProduct(null)}
-        className="w-full flex items-center justify-center gap-2 bg-primary text-white font-medium py-3 rounded-2xl mb-4"
+        className="w-full flex items-center justify-center gap-2 bg-primary text-white font-medium py-3 rounded-2xl mb-3"
       >
         <Plus size={18} />
         Yangi mahsulot qo'shish
       </button>
 
-      {products.length === 0 ? (
-        <p className="text-center text-gray-400 mt-10">Hozircha mahsulot yo'q</p>
+      <div className="relative mb-4">
+        <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Mahsulot qidirish..."
+          className="w-full bg-white rounded-full pl-10 pr-9 py-2.5 text-sm outline-none border border-gray-200 focus:border-primary"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+          >
+            <X size={16} />
+          </button>
+        )}
+      </div>
+
+      {visibleProducts.length === 0 ? (
+        <p className="text-center text-gray-400 mt-10">
+          {products.length === 0 ? "Hozircha mahsulot yo'q" : "Hech narsa topilmadi"}
+        </p>
       ) : (
         <div className="flex flex-col gap-3">
-          {products.map((product) => (
+          {visibleProducts.map((product) => (
             <div key={product.id} className="bg-white rounded-2xl p-3 flex gap-3 items-center">
               <SmartImage
                 src={imageUrl(product.image)}

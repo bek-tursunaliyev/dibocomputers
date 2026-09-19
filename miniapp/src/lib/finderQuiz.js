@@ -56,12 +56,9 @@ export const QUESTIONS = [
   },
 ];
 
-function getBudgetRange(value) {
-  return QUESTIONS.find((q) => q.key === "budget").options.find((o) => o.value === value)?.range;
-}
-
 // Admin har bir mahsulotga bir nechta javob (checkbox) belgilashi mumkin —
-// mos kelgan har bir savol uchun ball qo'shiladi.
+// mos kelgan har bir savol uchun ball qo'shiladi. Narx bo'yicha taxminiy bonus
+// berilmaydi — faqat admin aniq belgilagan javoblar hisobga olinadi.
 export function scoreProduct(product, answers) {
   let score = 0;
 
@@ -72,13 +69,6 @@ export function scoreProduct(product, answers) {
   if (product.quizBattery?.includes(answers.battery)) score += 2;
   if (product.quizMultitask?.includes(answers.multitask)) score += 2;
 
-  // Mahsulot hali tag'lanmagan bo'lsa ham, haqiqiy narxi byudjetga mos kelsa
-  // baribir arzimagan darajada tavsiyaga tushishi uchun kichik bonus beriladi.
-  const range = getBudgetRange(answers.budget);
-  if (range && product.price >= range[0] && product.price <= range[1]) {
-    score += 1;
-  }
-
   return score;
 }
 
@@ -86,10 +76,10 @@ export function getRecommendations(products, answers) {
   const computers = products.filter(
     (p) => !p.isAddon && (p.category?.name === "Noutbuklar" || p.category?.name === "Kompyuterlar")
   );
-  const pool = computers.length > 0 ? computers : products.filter((p) => !p.isAddon);
 
-  return pool
+  return computers
     .map((product) => ({ product, score: scoreProduct(product, answers) }))
+    .filter((r) => r.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
     .map((r) => r.product);
