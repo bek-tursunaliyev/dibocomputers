@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { api, imageUrl } from "../../lib/api";
 import { formatPrice } from "../../lib/format";
 import { useAdmin } from "../../context/AdminContext";
+import SmartImage from "../../components/SmartImage";
 import AdminProductForm from "./AdminProductForm";
 
 export default function AdminProducts() {
@@ -62,7 +63,7 @@ export default function AdminProducts() {
         <div className="flex flex-col gap-3">
           {products.map((product) => (
             <div key={product.id} className="bg-white rounded-2xl p-3 flex gap-3 items-center">
-              <img
+              <SmartImage
                 src={imageUrl(product.image)}
                 alt={product.name}
                 className="w-14 h-14 rounded-xl object-cover shrink-0"

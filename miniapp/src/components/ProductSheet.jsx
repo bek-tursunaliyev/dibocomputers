@@ -4,6 +4,7 @@ import { formatPrice } from "../lib/format";
 import { imageUrl } from "../lib/api";
 import { useCart } from "../context/CartContext";
 import { hapticFeedback } from "../lib/telegram";
+import SmartImage from "./SmartImage";
 
 export default function ProductSheet({ product, onClose }) {
   const [quantity, setQuantity] = useState(1);
@@ -24,7 +25,7 @@ export default function ProductSheet({ product, onClose }) {
         <div className="w-10 h-1.5 bg-gray-300 rounded-full mx-auto mt-3" />
 
         <div className="aspect-[4/3] bg-gray-100 mt-3">
-          <img src={imageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
+          <SmartImage src={imageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
         </div>
 
         <div className="p-5 pb-32">

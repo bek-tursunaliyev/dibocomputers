@@ -56,40 +56,29 @@ export const QUESTIONS = [
   },
 ];
 
-function textOf(product) {
-  return `${product.name} ${product.description || ""} ${(product.specs || []).join(" ")}`.toLowerCase();
+function getBudgetRange(value) {
+  return QUESTIONS.find((q) => q.key === "budget").options.find((o) => o.value === value)?.range;
 }
 
+// Admin har bir mahsulotga mos javoblarni (quizPurpose, quizBudget, ...) belgilagan bo'lsa,
+// aynan shu 6 ta savol bo'yicha to'g'ridan-to'g'ri solishtiramiz — bu taxminiy matn qidirishdan
+// ancha aniqroq ishlaydi.
 export function scoreProduct(product, answers) {
-  const text = textOf(product);
   let score = 0;
 
-  if (answers.purpose === "gaming" && /(rtx|gtx|geforce|gaming)/.test(text)) score += 4;
-  if (answers.purpose === "design" && /(i7|i9|ryzen 7|ryzen 9|32gb|16gb|rtx)/.test(text)) score += 3;
-  if ((answers.purpose === "office" || answers.purpose === "student") && product.price <= 800) score += 3;
+  if (product.quizPurpose && product.quizPurpose === answers.purpose) score += 4;
+  if (product.quizBudget && product.quizBudget === answers.budget) score += 4;
+  if (product.quizPortable && product.quizPortable === answers.portable) score += 2;
+  if (product.quizScreen && product.quizScreen === answers.screen) score += 2;
+  if (product.quizBattery && product.quizBattery === answers.battery) score += 2;
+  if (product.quizMultitask && product.quizMultitask === answers.multitask) score += 2;
 
-  const budgetOption = QUESTIONS.find((q) => q.key === "budget").options.find((o) => o.value === answers.budget);
-  if (budgetOption) {
-    const [min, max] = budgetOption.range;
-    if (product.price >= min && product.price <= max) {
-      score += 5;
-    } else {
-      const diff = product.price < min ? min - product.price : product.price - max;
-      score -= Math.min(4, diff / 150);
-    }
+  // Mahsulot hali tag'lanmagan bo'lsa ham, haqiqiy narxi byudjetga mos kelsa
+  // baribir arzimagan darajada tavsiyaga tushishi uchun kichik bonus beriladi.
+  const range = getBudgetRange(answers.budget);
+  if (range && product.price >= range[0] && product.price <= range[1]) {
+    score += 1;
   }
-
-  if (answers.portable === "yes" && /(13\.|14\.)/.test(text)) score += 2;
-  if (answers.portable === "no" && /(15\.|16\.|17\.)/.test(text)) score += 1;
-
-  if (answers.screen === "small" && /(13\.|14\.)/.test(text)) score += 2;
-  if (answers.screen === "medium" && /(15\.|16\.)/.test(text)) score += 2;
-  if (answers.screen === "large" && /17\./.test(text)) score += 2;
-
-  if (answers.multitask === "high" && /(32gb|16gb)/.test(text)) score += 3;
-  if (answers.multitask === "low" && /8gb/.test(text)) score += 1;
-
-  if (answers.battery === "high" && /(iris|efficient|uhd)/.test(text)) score += 1;
 
   return score;
 }

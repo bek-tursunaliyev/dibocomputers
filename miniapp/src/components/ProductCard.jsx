@@ -4,6 +4,7 @@ import { formatPrice } from "../lib/format";
 import { imageUrl } from "../lib/api";
 import { useCart } from "../context/CartContext";
 import { hapticFeedback } from "../lib/telegram";
+import SmartImage from "./SmartImage";
 
 export default function ProductCard({ product, onClick }) {
   const { addItem } = useCart();
@@ -23,7 +24,7 @@ export default function ProductCard({ product, onClick }) {
       className="bg-white rounded-2xl overflow-hidden shadow-sm text-left flex flex-col active:scale-[0.98] transition-transform cursor-pointer"
     >
       <div className="aspect-square bg-gray-100">
-        <img src={imageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
+        <SmartImage src={imageUrl(product.image)} alt={product.name} className="w-full h-full object-cover" />
       </div>
       <div className="p-3 flex flex-col gap-1.5">
         <p className="text-sm font-medium text-gray-800 line-clamp-2">{product.name}</p>

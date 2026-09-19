@@ -38,7 +38,23 @@ router.post(
   "/",
   adminAuth,
   asyncHandler(async (req, res) => {
-    const { name, description, price, oldPrice, image, specs, categoryId, stock, isAddon } = req.body;
+    const {
+      name,
+      description,
+      price,
+      oldPrice,
+      image,
+      specs,
+      categoryId,
+      stock,
+      isAddon,
+      quizPurpose,
+      quizBudget,
+      quizPortable,
+      quizScreen,
+      quizBattery,
+      quizMultitask,
+    } = req.body;
 
     if (!name || !price) {
       return res.status(400).json({ message: "Nomi va narxi majburiy" });
@@ -55,6 +71,12 @@ router.post(
         categoryId: categoryId ? Number(categoryId) : null,
         stock: stock ? Number(stock) : 50,
         isAddon: Boolean(isAddon),
+        quizPurpose: quizPurpose || null,
+        quizBudget: quizBudget || null,
+        quizPortable: quizPortable || null,
+        quizScreen: quizScreen || null,
+        quizBattery: quizBattery || null,
+        quizMultitask: quizMultitask || null,
       },
     });
 
@@ -66,7 +88,23 @@ router.put(
   "/:id",
   adminAuth,
   asyncHandler(async (req, res) => {
-    const { name, description, price, oldPrice, image, specs, categoryId, stock, isAddon } = req.body;
+    const {
+      name,
+      description,
+      price,
+      oldPrice,
+      image,
+      specs,
+      categoryId,
+      stock,
+      isAddon,
+      quizPurpose,
+      quizBudget,
+      quizPortable,
+      quizScreen,
+      quizBattery,
+      quizMultitask,
+    } = req.body;
 
     const product = await prisma.product.update({
       where: { id: Number(req.params.id) },
@@ -80,6 +118,12 @@ router.put(
         categoryId: categoryId !== undefined ? (categoryId ? Number(categoryId) : null) : undefined,
         stock: stock !== undefined ? Number(stock) : undefined,
         isAddon: isAddon !== undefined ? Boolean(isAddon) : undefined,
+        quizPurpose: quizPurpose !== undefined ? quizPurpose || null : undefined,
+        quizBudget: quizBudget !== undefined ? quizBudget || null : undefined,
+        quizPortable: quizPortable !== undefined ? quizPortable || null : undefined,
+        quizScreen: quizScreen !== undefined ? quizScreen || null : undefined,
+        quizBattery: quizBattery !== undefined ? quizBattery || null : undefined,
+        quizMultitask: quizMultitask !== undefined ? quizMultitask || null : undefined,
       },
     });
 

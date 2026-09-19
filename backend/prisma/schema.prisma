@@ -30,6 +30,12 @@ model Product {
   specs       String[]    @default([])
   isAddon     Boolean     @default(false)
   stock       Int         @default(50)
+  quizPurpose   String?
+  quizBudget    String?
+  quizPortable  String?
+  quizScreen    String?
+  quizBattery   String?
+  quizMultitask String?
   category    Category?   @relation(fields: [categoryId], references: [id])
   categoryId  Int?
   orderItems  OrderItem[]

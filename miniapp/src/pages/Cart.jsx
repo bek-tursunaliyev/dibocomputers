@@ -4,6 +4,7 @@ import { useCart } from "../context/CartContext";
 import { formatPrice } from "../lib/format";
 import { imageUrl, api } from "../lib/api";
 import { getInitData, getTelegramUser, closeTelegramApp, hapticFeedback } from "../lib/telegram";
+import SmartImage from "../components/SmartImage";
 
 export default function Cart() {
   const { items, updateQuantity, removeItem, addItem, total, clearCart } = useCart();
@@ -79,7 +80,7 @@ export default function Cart() {
         <div className="px-4 flex flex-col gap-3">
           {items.map((item) => (
             <div key={item.productId} className="bg-white rounded-2xl p-3 flex gap-3 items-center">
-              <img src={imageUrl(item.image)} className="w-16 h-16 rounded-xl object-cover" alt={item.name} />
+              <SmartImage src={imageUrl(item.image)} className="w-16 h-16 rounded-xl object-cover" alt={item.name} />
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-800 line-clamp-2">{item.name}</p>
                 <p className="text-primary font-bold text-sm mt-1">{formatPrice(item.price)}</p>
