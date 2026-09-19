@@ -15,7 +15,7 @@ function initBot() {
 
   bot.telegram
     .setChatMenuButton({
-      menu_button: { type: "web_app", text: "🛒 Katalog", web_app: { url: MINIAPP_URL } },
+      menu_button: { type: "web_app", text: "🏪 Do'konga o'tish", web_app: { url: MINIAPP_URL } },
     })
     .catch((err) => console.error("Menyu tugmasini o'rnatishda xatolik:", err.message));
 
@@ -24,7 +24,7 @@ function initBot() {
       `Assalomu alaykum, ${ctx.from.first_name}! 👋\n\nDiboComputers - Namangandagi ishonchli kompyuter va noutbuk do'koni.\n\nKatalogimizni ko'rish va buyurtma berish uchun pastdagi tugmani bosing.`,
       {
         reply_markup: {
-          inline_keyboard: [[{ text: "🛒 Do'konni ochish", web_app: { url: MINIAPP_URL } }]],
+          inline_keyboard: [[{ text: "🏪 Do'konga o'tish", web_app: { url: MINIAPP_URL } }]],
         },
       }
     );
