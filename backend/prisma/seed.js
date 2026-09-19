@@ -19,11 +19,6 @@ async function main() {
       create: { id: 2, name: "Kompyuterlar", emoji: "🖥️" },
     }),
     prisma.category.upsert({
-      where: { id: 3 },
-      update: {},
-      create: { id: 3, name: "Monitorlar", emoji: "🖼️" },
-    }),
-    prisma.category.upsert({
       where: { id: 4 },
       update: {},
       create: { id: 4, name: "Aksessuarlar", emoji: "🖱️" },

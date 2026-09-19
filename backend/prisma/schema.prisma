@@ -36,7 +36,7 @@ model Product {
   quizScreen    String[]    @default([])
   quizBattery   String[]    @default([])
   quizMultitask String[]    @default([])
-  category    Category?   @relation(fields: [categoryId], references: [id])
+  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId  Int?
   orderItems  OrderItem[]
   createdAt   DateTime    @default(now())

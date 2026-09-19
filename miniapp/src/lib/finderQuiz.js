@@ -83,8 +83,10 @@ export function scoreProduct(product, answers) {
 }
 
 export function getRecommendations(products, answers) {
-  const laptops = products.filter((p) => !p.isAddon && p.category?.name === "Noutbuklar");
-  const pool = laptops.length > 0 ? laptops : products.filter((p) => !p.isAddon);
+  const computers = products.filter(
+    (p) => !p.isAddon && (p.category?.name === "Noutbuklar" || p.category?.name === "Kompyuterlar")
+  );
+  const pool = computers.length > 0 ? computers : products.filter((p) => !p.isAddon);
 
   return pool
     .map((product) => ({ product, score: scoreProduct(product, answers) }))

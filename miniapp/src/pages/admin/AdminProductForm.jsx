@@ -9,6 +9,8 @@ function quizKey(questionKey) {
   return `quiz${questionKey.charAt(0).toUpperCase()}${questionKey.slice(1)}`;
 }
 
+const QUIZ_CATEGORY_NAMES = ["Noutbuklar", "Kompyuterlar"];
+
 const emptyForm = {
   name: "",
   description: "",
@@ -56,6 +58,9 @@ export default function AdminProductForm({ product, categories, onClose, onSaved
     }
   }, [product]);
 
+  const selectedCategory = categories.find((c) => String(c.id) === String(form.categoryId));
+  const showQuizFields = !form.isAddon && QUIZ_CATEGORY_NAMES.includes(selectedCategory?.name);
+
   function toggleQuizOption(questionKey, value) {
     const field = quizKey(questionKey);
     setForm((f) => {
@@ -84,7 +89,7 @@ export default function AdminProductForm({ product, categories, onClose, onSaved
     e.preventDefault();
     setError("");
 
-    if (!form.isAddon) {
+    if (showQuizFields) {
       const missing = QUESTIONS.find((q) => form[quizKey(q.key)].length === 0);
       if (missing) {
         setError(`"${missing.question}" savoli uchun kamida bitta javob belgilang`);
@@ -104,12 +109,12 @@ export default function AdminProductForm({ product, categories, onClose, onSaved
         stock: form.stock ? Number(form.stock) : 50,
         isAddon: form.isAddon,
         specs: form.specs.split("\n").map((s) => s.trim()).filter(Boolean),
-        quizPurpose: form.isAddon ? [] : form.quizPurpose,
-        quizBudget: form.isAddon ? [] : form.quizBudget,
-        quizPortable: form.isAddon ? [] : form.quizPortable,
-        quizScreen: form.isAddon ? [] : form.quizScreen,
-        quizBattery: form.isAddon ? [] : form.quizBattery,
-        quizMultitask: form.isAddon ? [] : form.quizMultitask,
+        quizPurpose: showQuizFields ? form.quizPurpose : [],
+        quizBudget: showQuizFields ? form.quizBudget : [],
+        quizPortable: showQuizFields ? form.quizPortable : [],
+        quizScreen: showQuizFields ? form.quizScreen : [],
+        quizBattery: showQuizFields ? form.quizBattery : [],
+        quizMultitask: showQuizFields ? form.quizMultitask : [],
       };
 
       if (product) {
@@ -240,12 +245,13 @@ export default function AdminProductForm({ product, categories, onClose, onSaved
           Savatchada qo'shimcha taklif (addon) sifatida ko'rsatilsin
         </label>
 
-        {!form.isAddon && (
+        {showQuizFields && (
           <div className="border-t border-gray-100 pt-4 flex flex-col gap-4">
             <p className="text-sm font-semibold text-gray-900">
               "Komputer tanlash" testi uchun javoblar
               <span className="block text-xs font-normal text-gray-400 mt-0.5">
-                Mos keladigan barcha variantlarni belgilang (bir nechtasini tanlash mumkin) — har bir savol uchun kamida bittasi kerak
+                Faqat Noutbuk/Kompyuter kategoriyasidagi mahsulotlarga tegishli. Mos keladigan barcha
+                variantlarni belgilang — har bir savol uchun kamida bittasi kerak
               </span>
             </p>
 
