@@ -59,6 +59,7 @@ export default function App() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="stories" element={<AdminStories />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />
     </div>
