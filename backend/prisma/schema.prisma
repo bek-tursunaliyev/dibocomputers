@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING
+  DELIVERED
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  emoji     String    @default("📦")
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String?
+  price       Int
+  oldPrice    Int?
+  image       String?
+  specs       String[]    @default([])
+  isAddon     Boolean     @default(false)
+  stock       Int         @default(50)
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  telegramId String   @unique
+  firstName  String?
+  lastName   String?
+  username   String?
+  phone      String?
+  orders     Order[]
+  createdAt  DateTime @default(now())
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  user        User        @relation(fields: [userId], references: [id])
+  userId      Int
+  items       OrderItem[]
+  totalAmount Int
+  location    String
+  phone       String
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  name      String
+  price     Int
+  quantity  Int
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+}
+
+model Story {
+  id        Int      @id @default(autoincrement())
+  label     String
+  icon      String   @default("Sparkles")
+  gradient  String   @default("from-primary to-orange-400")
+  title     String
+  text      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
