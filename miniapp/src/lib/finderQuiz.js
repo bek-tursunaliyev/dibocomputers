@@ -13,10 +13,10 @@ export const QUESTIONS = [
     key: "budget",
     question: "Byudjetingiz qancha?",
     options: [
-      { value: "low", label: "5 - 9 mln so'm", range: [0, 9000000] },
-      { value: "mid", label: "9 - 13 mln so'm", range: [9000000, 13000000] },
-      { value: "high", label: "13 - 18 mln so'm", range: [13000000, 18000000] },
-      { value: "premium", label: "18 mln so'mdan yuqori", range: [18000000, 999000000] },
+      { value: "low", label: "$400 - $700", range: [0, 700] },
+      { value: "mid", label: "$700 - $1,000", range: [700, 1000] },
+      { value: "high", label: "$1,000 - $1,500", range: [1000, 1500] },
+      { value: "premium", label: "$1,500 dan yuqori", range: [1500, 999000] },
     ],
   },
   {
@@ -66,7 +66,7 @@ export function scoreProduct(product, answers) {
 
   if (answers.purpose === "gaming" && /(rtx|gtx|geforce|gaming)/.test(text)) score += 4;
   if (answers.purpose === "design" && /(i7|i9|ryzen 7|ryzen 9|32gb|16gb|rtx)/.test(text)) score += 3;
-  if ((answers.purpose === "office" || answers.purpose === "student") && product.price <= 11000000) score += 3;
+  if ((answers.purpose === "office" || answers.purpose === "student") && product.price <= 800) score += 3;
 
   const budgetOption = QUESTIONS.find((q) => q.key === "budget").options.find((o) => o.value === answers.budget);
   if (budgetOption) {
@@ -75,7 +75,7 @@ export function scoreProduct(product, answers) {
       score += 5;
     } else {
       const diff = product.price < min ? min - product.price : product.price - max;
-      score -= Math.min(4, diff / 2000000);
+      score -= Math.min(4, diff / 150);
     }
   }
 

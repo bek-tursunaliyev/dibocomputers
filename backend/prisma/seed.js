@@ -36,8 +36,8 @@ async function main() {
     {
       name: "ASUS TUF Gaming F15",
       description: "Kuchli gaming noutbuk, Intel Core i7, RTX 3050",
-      price: 12500000,
-      oldPrice: 13900000,
+      price: 999,
+      oldPrice: 1099,
       image: "/uploads/logo.png",
       specs: [
         "Intel Core i7-12700H",
@@ -52,8 +52,8 @@ async function main() {
     {
       name: "HP Pavilion 15",
       description: "Kundalik ish va o'qish uchun ideal noutbuk",
-      price: 9800000,
-      oldPrice: 10500000,
+      price: 749,
+      oldPrice: 829,
       image: "/uploads/logo.png",
       specs: [
         "Intel Core i5-1235U",
@@ -68,7 +68,7 @@ async function main() {
     {
       name: "Dell Gaming Desktop PC",
       description: "Yuqori unumdorlikka ega gaming kompyuter",
-      price: 15000000,
+      price: 1199,
       oldPrice: null,
       image: "/uploads/logo.png",
       specs: [
@@ -84,8 +84,8 @@ async function main() {
     {
       name: "Lenovo IdeaCentre",
       description: "Ofis va o'quv ishlari uchun ixcham kompyuter",
-      price: 8200000,
-      oldPrice: 8900000,
+      price: 649,
+      oldPrice: 719,
       image: "/uploads/logo.png",
       specs: [
         "Intel Core i5-12400",
@@ -100,8 +100,8 @@ async function main() {
     {
       name: "Samsung 24\" Monitor",
       description: "To'liq HD, IPS panelli monitor",
-      price: 2100000,
-      oldPrice: 2400000,
+      price: 169,
+      oldPrice: 199,
       image: "/uploads/logo.png",
       specs: ["23.8\" IPS panel", "1920x1080 FHD", "75Hz yangilanish", "HDMI + VGA"],
       categoryId: monitor.id,
@@ -110,8 +110,8 @@ async function main() {
     {
       name: "Mexanik Klaviatura RGB",
       description: "Gamerlar uchun mexanik klaviatura, RGB yoritgich",
-      price: 450000,
-      oldPrice: 590000,
+      price: 35,
+      oldPrice: 49,
       image: "/uploads/logo.png",
       specs: ["Blue switch", "RGB yoritgich", "USB simli ulanish", "Anti-ghosting"],
       categoryId: aksessuar.id,
@@ -120,7 +120,7 @@ async function main() {
     {
       name: "SSD NVMe 512GB",
       description: "Tezkor ma'lumot saqlash uchun SSD disk",
-      price: 650000,
+      price: 49,
       oldPrice: null,
       image: "/uploads/logo.png",
       specs: ["512GB hajm", "NVMe PCIe Gen3", "O'qish: 3500MB/s"],
@@ -130,7 +130,7 @@ async function main() {
     {
       name: "Simsiz Sichqoncha",
       description: "Qo'shimcha aksessuar sifatida qulay simsiz sichqoncha",
-      price: 55000,
+      price: 5,
       oldPrice: null,
       image: "/uploads/logo.png",
       specs: ["2.4GHz simsiz ulanish", "1600 DPI", "Batareya bilan ishlaydi"],
@@ -142,7 +142,9 @@ async function main() {
 
   for (const product of products) {
     const existing = await prisma.product.findFirst({ where: { name: product.name } });
-    if (!existing) {
+    if (existing) {
+      await prisma.product.update({ where: { id: existing.id }, data: product });
+    } else {
       await prisma.product.create({ data: product });
     }
   }

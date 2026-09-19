@@ -2,8 +2,6 @@ import { NavLink } from "react-router-dom";
 import { House, Search, ShoppingCart, User, ShieldCheck } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAdmin } from "../context/AdminContext";
-import { ADMIN_URL } from "../config";
-import { openExternalLink } from "../lib/telegram";
 
 const tabs = [
   { to: "/", label: "Bosh sahifa", Icon: House },
@@ -14,11 +12,7 @@ const tabs = [
 
 export default function BottomNav() {
   const { count } = useCart();
-  const { isAdmin, adminToken } = useAdmin();
-
-  function openAdminPanel() {
-    openExternalLink(`${ADMIN_URL}?token=${encodeURIComponent(adminToken)}`);
-  }
+  const { isAdmin } = useAdmin();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center h-16 safe-bottom z-40">
@@ -44,13 +38,17 @@ export default function BottomNav() {
       ))}
 
       {isAdmin && (
-        <button
-          onClick={openAdminPanel}
-          className="flex flex-col items-center justify-center flex-1 h-full text-[10px] text-gray-400"
+        <NavLink
+          to="/admin"
+          className={({ isActive }) =>
+            `flex flex-col items-center justify-center flex-1 h-full text-[10px] ${
+              isActive ? "text-primary font-semibold" : "text-gray-400"
+            }`
+          }
         >
           <ShieldCheck size={22} strokeWidth={2} className="mb-1" />
           Admin panel
-        </button>
+        </NavLink>
       )}
     </nav>
   );

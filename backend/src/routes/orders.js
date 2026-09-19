@@ -3,6 +3,7 @@ const prisma = require("../lib/prisma");
 const adminAuth = require("../middleware/adminAuth");
 const { verifyTelegramInitData } = require("../lib/telegramAuth");
 const { sendOrderConfirmation } = require("../bot");
+const asyncHandler = require("../lib/asyncHandler");
 
 const router = express.Router();
 
@@ -79,44 +80,55 @@ router.post("/", async (req, res) => {
 });
 
 // Mini App: mijozning o'z buyurtmalari tarixi
-router.get("/mine", async (req, res) => {
-  const { telegramId } = req.query;
-  if (!telegramId) return res.status(400).json({ message: "telegramId majburiy" });
+router.get(
+  "/mine",
+  asyncHandler(async (req, res) => {
+    const { telegramId } = req.query;
+    if (!telegramId) return res.status(400).json({ message: "telegramId majburiy" });
 
-  const user = await prisma.user.findUnique({ where: { telegramId: String(telegramId) } });
-  if (!user) return res.json([]);
+    const user = await prisma.user.findUnique({ where: { telegramId: String(telegramId) } });
+    if (!user) return res.json([]);
 
-  const orders = await prisma.order.findMany({
-    where: { userId: user.id },
-    include: { items: true },
-    orderBy: { createdAt: "desc" },
-  });
+    const orders = await prisma.order.findMany({
+      where: { userId: user.id },
+      include: { items: true },
+      orderBy: { createdAt: "desc" },
+    });
 
-  res.json(orders);
-});
+    res.json(orders);
+  })
+);
 
 // Admin: barcha buyurtmalar ro'yxati
-router.get("/", adminAuth, async (req, res) => {
-  const orders = await prisma.order.findMany({
-    include: { items: true, user: true },
-    orderBy: { createdAt: "desc" },
-  });
-  res.json(orders);
-});
+router.get(
+  "/",
+  adminAuth,
+  asyncHandler(async (req, res) => {
+    const orders = await prisma.order.findMany({
+      include: { items: true, user: true },
+      orderBy: { createdAt: "desc" },
+    });
+    res.json(orders);
+  })
+);
 
 // Admin: buyurtma holatini o'zgartirish
-router.patch("/:id/status", adminAuth, async (req, res) => {
-  const { status } = req.body;
-  if (!["PENDING", "DELIVERED"].includes(status)) {
-    return res.status(400).json({ message: "Holat noto'g'ri" });
-  }
+router.patch(
+  "/:id/status",
+  adminAuth,
+  asyncHandler(async (req, res) => {
+    const { status } = req.body;
+    if (!["PENDING", "DELIVERED"].includes(status)) {
+      return res.status(400).json({ message: "Holat noto'g'ri" });
+    }
 
-  const order = await prisma.order.update({
-    where: { id: Number(req.params.id) },
-    data: { status },
-  });
+    const order = await prisma.order.update({
+      where: { id: Number(req.params.id) },
+      data: { status },
+    });
 
-  res.json(order);
-});
+    res.json(order);
+  })
+);
 
 module.exports = router;

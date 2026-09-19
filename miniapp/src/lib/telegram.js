@@ -24,15 +24,6 @@ export function getInitData() {
   return tg ? tg.initData : "";
 }
 
-export function openExternalLink(url) {
-  const tg = getTelegram();
-  if (tg && tg.openLink) {
-    tg.openLink(url);
-  } else {
-    window.open(url, "_blank");
-  }
-}
-
 export function closeTelegramApp() {
   const tg = getTelegram();
   if (tg) tg.close();

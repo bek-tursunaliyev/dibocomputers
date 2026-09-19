@@ -1,3 +1,3 @@
 export function formatPrice(value) {
-  return `${Number(value).toLocaleString("uz-UZ")} so'm`;
+  return `$${Number(value).toLocaleString("en-US")}`;
 }

@@ -28,6 +28,14 @@ app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 
 app.use((err, req, res, next) => {
   console.error(err);
+
+  if (err.code === "P2025") {
+    return res.status(404).json({ message: "Ma'lumot topilmadi (u allaqachon o'chirilgan bo'lishi mumkin)" });
+  }
+  if (err.code === "P2003") {
+    return res.status(409).json({ message: "Bu yozuv boshqa ma'lumotlar bilan bog'langani uchun amalni bajarib bo'lmadi" });
+  }
+
   res.status(500).json({ message: err.message || "Server xatoligi" });
 });
 
