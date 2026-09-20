@@ -4,3 +4,4 @@ dist/
 backend/uploads/*
 !backend/uploads/logo.png
 *.log
+.vercel

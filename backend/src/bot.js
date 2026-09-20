@@ -2,10 +2,13 @@ const { Telegraf } = require("telegraf");
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const MINIAPP_URL = process.env.MINIAPP_URL;
+const WEBHOOK_PATH = "/api/telegram/webhook";
+const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET;
 
 let bot = null;
 
-function initBot() {
+function getBot() {
+  if (bot) return bot;
   if (!BOT_TOKEN) {
     console.warn("BOT_TOKEN topilmadi, bot ishga tushirilmadi.");
     return null;
@@ -32,21 +35,32 @@ function initBot() {
 
   bot.catch((err) => console.error("Bot xatoligi:", err.message));
 
-  bot.launch();
-  console.log("Telegram bot ishga tushdi.");
-
-  process.once("SIGINT", () => bot.stop("SIGINT"));
-  process.once("SIGTERM", () => bot.stop("SIGTERM"));
-
   return bot;
 }
 
+function initBot() {
+  const b = getBot();
+  if (!b) return null;
+
+  if (process.env.VERCEL) {
+    console.log("Telegram bot webhook rejimida ishlaydi:", WEBHOOK_PATH);
+  } else {
+    b.launch();
+    console.log("Telegram bot polling rejimida (lokal) ishga tushdi.");
+    process.once("SIGINT", () => b.stop("SIGINT"));
+    process.once("SIGTERM", () => b.stop("SIGTERM"));
+  }
+
+  return b;
+}
+
 async function sendOrderConfirmation(telegramId) {
-  if (!bot) return;
-  await bot.telegram.sendMessage(
+  const b = getBot();
+  if (!b) return;
+  await b.telegram.sendMessage(
     telegramId,
     "✅ Buyurtmangiz muvaffaqiyatli qabul qilindi!\n\nAdmin tez orada siz bilan bog'lanadi!"
   );
 }
 
-module.exports = { initBot, sendOrderConfirmation };
+module.exports = { initBot, getBot, sendOrderConfirmation, WEBHOOK_PATH, WEBHOOK_SECRET };

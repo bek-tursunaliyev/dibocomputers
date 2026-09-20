@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
-const { initBot } = require("./bot");
+const { initBot, getBot, WEBHOOK_PATH, WEBHOOK_SECRET } = require("./bot");
 const authRoutes = require("./routes/auth");
 const categoryRoutes = require("./routes/categories");
 const productRoutes = require("./routes/products");
@@ -14,6 +14,13 @@ const storyRoutes = require("./routes/stories");
 const app = express();
 
 app.use(cors());
+
+const bot = getBot();
+if (bot) {
+  // express.json()dan OLDIN ulanadi - Telegraf so'rov tanasini o'zi o'qiydi
+  app.use(bot.webhookCallback(WEBHOOK_PATH, { secretToken: WEBHOOK_SECRET }));
+}
+
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
@@ -39,8 +46,14 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message || "Server xatoligi" });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Backend server http://localhost:${PORT} da ishga tushdi`);
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Backend server http://localhost:${PORT} da ishga tushdi`);
+    initBot();
+  });
+} else {
   initBot();
-});
+}
+
+module.exports = app;
